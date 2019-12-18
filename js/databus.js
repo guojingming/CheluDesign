@@ -23,5 +23,7 @@ export default class DataBus {
     this.mySnake    = []
     this.enemySnake = []
     this.gameOver   = false
+    this.windowHeight = wx.getSystemInfoSync().windowHeight
+    this.windowWidth = wx.getSystemInfoSync().windowWidth
   }
 }
