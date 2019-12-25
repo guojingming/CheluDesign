@@ -12,22 +12,45 @@ export default class Snake extends Sprite {
     super('images/face/face2.png', SNAKE_PIC_WIDTH, SNAKE_PIC_HEIGHT)
     
     this.speed = 0.1;
-    this.directionX = 1.0;
+    this.directionX = 0.0;
     this.directionY = 0.0;
     this.width = databus.windowWidth / 15;
+    this.radius = this.width / 4;
     this.height = this.width;
-    this.locationX = 0 + this.width / 2;
-    this.locationY = 0 + this.height / 2;
+    this.locationX = 20 + this.width / 2;
+    this.locationY = 20 + this.height / 2;
     this.speedUpRate = 0;
     this.bodyNodes = [];
-    this.testBodies(ctx);
+    this.hp = 100;
+    this.initBodies(ctx);
     this.render(ctx);
+    this.alive = true;
   }
 
-  testBodies(ctx){
-    for(var i = 0;i<10;++i){
-      this.bodyNodes.push(new SnakeBody(ctx, "255, 128, 0", this.locationX, this.locationY, this.speed, 0, 0));
+  checkCollision(locationX, locationY, radius){
+    if(Math.sqrt(Math.pow(this.locationX - locationX, 2) + Math.pow(this.locationY - locationY, 2)) < this.radius + radius){
+      return true;
+    }else{
+      return false;
     }
+  }
+
+  checkAlive(){
+    if(this.hp <= 0){
+      this.alive = false;
+    }
+  }
+
+  grow(ctx){
+    var length = this.bodyNodes.length;
+    var newBodyNode = this.bodyNodes[length - 1];
+    this.bodyNodes.push(new SnakeBody(ctx, "255, 128, 0", newBodyNode.locationX, newBodyNode.locationY, newBodyNode.speed, 0, 0));
+  }
+
+  initBodies(ctx){
+    //for(var i = 0;i<10;++i){
+    this.bodyNodes.push(new SnakeBody(ctx, "255, 128, 0", this.locationX, this.locationY, this.speed, 0, 0));
+    //}
   }
 
   updateLocation(){
@@ -126,9 +149,9 @@ export default class Snake extends Sprite {
 class SnakeBody{
   constructor(ctx, color, locationX, locationY, speed, directionX, directionY){
     //super('images/body/b1.png', 50, 50);
-    this.radius = databus.windowWidth / 40;
     this.width = databus.windowWidth / 20;
     this.height = databus.windowWidth / 20;
+    this.radius = this.width / 2;
     this.locationX = locationX;
     this.locationY = locationY;
     this.lastLocationX = locationX;
@@ -142,6 +165,14 @@ class SnakeBody{
     this.directionY = directionY;
     this.speedUpRate = 0;
     this.render(ctx);
+  }
+
+  checkCollision(locationX, locationY, radius){
+    if(Math.sqrt(Math.pow(this.locationX - locationX, 2) + Math.pow(this.locationY - locationY, 2)) < this.radius + radius){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   updateLocation(){
@@ -164,8 +195,8 @@ class SnakeBody{
       this.directionX = newDirectionX * rate;
       this.directionY = newDirectionY * Math.sqrt((1 - rate * rate));
     }else{
-      this.directionX = 0;
-      this.directionY = 0;
+      //this.directionX = 0;
+      //this.directionY = 0;
     } 
   }
 

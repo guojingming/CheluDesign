@@ -18,7 +18,7 @@ export default class JoyStickBody extends Sprite {
       this.locationY = JOY_STICK_LOCATIONY;
       this.width = JOY_STICK_WIDTH;
       this.height = JOY_STICK_HEIGHT;
-      this.deltaX = 0;
+      this.deltaX = 10;
       this.deltaY = 0;
       this.started = false;
       this.render(ctx);
@@ -57,9 +57,14 @@ export default class JoyStickBody extends Sprite {
                   y = (JOY_STICK_LOCATIONY + this.height / 2) - JOY_STICK_MAX_LENGTH * (1 - rate);
               }
           }
-          
+
           this.locationX = x - this.width / 2;
           this.locationY = y - this.height / 2;
+
+          if(deltaX * deltaX + deltaY * deltaY < JOY_STICK_MAX_LENGTH * JOY_STICK_MAX_LENGTH / 4){
+            return;
+          }
+          
           this.deltaX = x - JOY_STICK_LOCATIONX - this.width / 2;
           this.deltaY = y - JOY_STICK_LOCATIONY - this.height / 2;
           //console.log("DX " + this.deltaX + " DY " + this.deltaY);
@@ -89,8 +94,14 @@ export default class JoyStickBody extends Sprite {
                 y = (JOY_STICK_LOCATIONY + this.height / 2) - JOY_STICK_MAX_LENGTH * Math.sqrt((1 - rate * rate));
             }
         }
+
         this.locationX = x - this.width / 2;
         this.locationY = y - this.height / 2;
+
+        if(deltaX * deltaX + deltaY * deltaY < JOY_STICK_MAX_LENGTH * JOY_STICK_MAX_LENGTH / 4){
+          return;
+        }
+
         this.deltaX = x - JOY_STICK_LOCATIONX - this.width / 2;
         this.deltaY = y - JOY_STICK_LOCATIONY - this.height / 2;
         //console.log("DX " + this.deltaX + " DY " + this.deltaY);
