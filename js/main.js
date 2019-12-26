@@ -5,7 +5,8 @@ import Snake      from './player/snake'
 import Wall      from './player/wall'
 import JoyStickBase from './joystick/joystickbase'
 import JoyStickBody from './joystick/joystickbody'
-import Apple from './player/apple'
+import AppleFactory from './player/apple'
+import GameInfo   from './runtime/gameinfo'
 
 let ctx   = canvas.getContext('2d')
 let databus = new DataBus()
@@ -24,11 +25,13 @@ export default class Main {
   restart() {
     databus.reset()
 
+    canvas.removeEventListener('touchstart', this.restartTouchEventHandler)
+
     this.bg       = new BackGround(ctx)
     this.snake   = new Snake(ctx)
-    this.apple = new Apple(ctx)
     this.wall = new Wall(ctx)
-    //this.gameinfo = new GameInfo()
+    this.appleFactory = new AppleFactory()
+    this.gameinfo = new GameInfo()
     this.music    = new Music()
     this.joystickbase = new JoyStickBase(ctx)
     this.joystickbody = new JoyStickBody(ctx)
@@ -53,9 +56,9 @@ export default class Main {
   render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    this.bg.render(ctx)
-    this.wall.render(ctx)
-    this.apple.render(ctx)
+    this.bg.render(ctx, this.snake)
+    this.wall.render(ctx, this.snake)
+    this.appleFactory.render(ctx)
     this.snake.render(ctx)
     this.joystickbase.render(ctx)
     this.joystickbody.render(ctx)
@@ -66,10 +69,15 @@ export default class Main {
     //this.bg.update()
     this.snake.updateDirection(this.joystickbody.deltaX, this.joystickbody.deltaY);
     this.snake.updateLocation();
-    if(this.snake.checkCollision(this.apple.locationX, this.apple.locationY, this.apple.radius)){
-      this.snake.grow(ctx);
-      this.apple.update();
+
+    for(var i = 0;i < this.appleFactory.appleCount;++i){
+      if(this.snake.checkCollision(this.appleFactory.apples[i].locationX, this.appleFactory.apples[i].locationY, this.appleFactory.apples[i].radius)){
+        databus.score++;
+        this.snake.grow(ctx);
+        this.appleFactory.removeApple(i);
+      }
     }
+    this.appleFactory.generateNewApple(ctx, this.wall);
   }
 
   sleep(delay) {
@@ -80,8 +88,8 @@ export default class Main {
   }
 
   checkover(){
-    this.wall.checkCollision(this.snake);
-    this.snake.checkAlive();
+    //this.wall.checkCollision(this.snake);
+    //this.snake.checkAlive();
     if(!this.snake.alive){
       this.over = true;
     }
@@ -89,19 +97,40 @@ export default class Main {
 
   // 实现游戏帧循环
   loop() {
-    databus.frame++
+      if(!this.over){
+          databus.frame++
+          this.update()
+          this.render()
+          this.checkover()
+          this.sleep(20)
+          this.aniId = window.requestAnimationFrame(
+            this.bindLoop,
+            canvas
+          )
+          if(this.over == true){
+            this.gameinfo.renderGameOver(ctx, databus.score)
+            canvas.addEventListener('touchstart',((e) => {
+              e.preventDefault()
+              let x = e.touches[0].clientX
+              let y = e.touches[0].clientY
 
-    this.update()
-    this.render()
-    this.checkover()
-    this.sleep(20)
-    this.aniId = window.requestAnimationFrame(
-      this.bindLoop,
-      canvas
-    )
-    if(this.over == true){
-      databus.frame = 0
-      this.restart()
-    }
+              var btnArea = {
+                startX: databus.windowWidth / 2 - 40,
+                startY: databus.windowHeight / 2 - 100 + 130,
+                endX  : databus.windowWidth / 2  + 50,
+                endY  : databus.windowHeight / 2 - 100 + 205
+              }
+
+              if (   x >= btnArea.startX
+                  && x <= btnArea.endX
+                  && y >= btnArea.startY
+                  && y <= btnArea.endY  ){
+                    this.restart();
+              }
+            }).bind(this));
+            //databus.frame = 0
+            //this.restart()
+          }
+      }
   }
 }

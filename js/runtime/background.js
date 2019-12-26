@@ -3,9 +3,13 @@ import Sprite from '../base/sprite'
 const screenWidth  = window.innerWidth
 const screenHeight = window.innerHeight
 
-const BG_IMG_SRC   = 'images/bg2.png'
-const BG_WIDTH     = 1920
-const BG_HEIGHT    = 1620
+// const BG_IMG_SRC   = 'images/bg2.png'
+// const BG_WIDTH     = 1920
+// const BG_HEIGHT    = 1620
+
+const BG_IMG_SRC   = 'images/bg2_s.png'
+const BG_WIDTH     = 1000
+const BG_HEIGHT    = 800
 
 /**
  * 游戏背景类
@@ -16,7 +20,7 @@ export default class BackGround extends Sprite {
     super(BG_IMG_SRC, BG_WIDTH, BG_HEIGHT)
 
 
-    this.render(ctx)
+    //this.render(ctx)
   }
 
   update() {
@@ -29,13 +33,16 @@ export default class BackGround extends Sprite {
    * 第一张漏出高度为top部分，其余的隐藏在屏幕上面
    * 第二张补全除了top高度之外的部分，其余的隐藏在屏幕下面
    */
-  render(ctx) {
+  render(ctx, snake) {
+    this.renderX = snake.locationX - screenWidth / 2;
+    this.renderY = snake.locationY - screenHeight / 2;
+
     ctx.drawImage(
       this.img,
-      0,
-      0,
-      this.width,
-      this.height,
+      this.renderX,
+      this.renderY,
+      screenWidth,
+      screenHeight,
       0,
       0,
       screenWidth,

@@ -1,21 +1,18 @@
 import DataBus from '../databus'
 let databus = new DataBus()
 
-const WALL_LR_OFFSET = databus.windowWidth / 15
-const WALL_UD_OFFSET = databus.windowWidth / 15
-
 
 export default class Wall{
     constructor(ctx){
-        // this.ulx = databus.windowWidth / 15;
-        // this.uly = databus.windowWidth / 15;
-        // this.drx = databus.windowWidth * 14 / 15;
-        // this.dry = databus.windowHeight - this.uly;
-        this.ulx = 0;
-        this.uly = 0;
-        this.drx = databus.windowWidth;
-        this.dry = databus.windowHeight;
-        this.render(ctx);
+        // this.ulx = 0;
+        // this.uly = 0;
+        // this.drx = databus.windowWidth;
+        // this.dry = databus.windowHeight;
+        this.ulx = databus.wallUlx;
+        this.uly = databus.wallUly;
+        this.drx = databus.wallDrx;
+        this.dry = databus.wallDry;
+        //this.render(ctx);
     }
 
 
@@ -28,18 +25,24 @@ export default class Wall{
         }
     }
     
-    render(ctx){
+    render(ctx, snake){
         ctx.strokeStyle = 'red';
         // 设置线条的宽度
         ctx.lineWidth = 5;
 
+        this.renderUlx = databus.wallUlx - (snake.locationX - databus.windowWidth / 2);
+        this.renderUly = databus.wallUly - (snake.locationY - databus.windowHeight / 2);
+        this.renderDrx = databus.wallDrx - (snake.locationX - databus.windowWidth / 2);
+        this.renderDry = databus.wallDry - (snake.locationY - databus.windowHeight / 2);
+
+
         // 绘制直线
         ctx.beginPath();
-        ctx.moveTo(this.ulx, this.uly);
-        ctx.lineTo(this.drx, this.uly);
-        ctx.lineTo(this.drx, this.dry);
-        ctx.lineTo(this.ulx, this.dry);
-        ctx.lineTo(this.ulx, this.uly);
+        ctx.moveTo(this.renderUlx, this.renderUly);
+        ctx.lineTo(this.renderDrx, this.renderUly);
+        ctx.lineTo(this.renderDrx, this.renderDry);
+        ctx.lineTo(this.renderUlx, this.renderDry);
+        ctx.lineTo(this.renderUlx, this.renderUly);
         ctx.closePath();
         ctx.stroke();
     }

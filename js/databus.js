@@ -25,5 +25,11 @@ export default class DataBus {
     this.gameOver   = false
     this.windowHeight = wx.getSystemInfoSync().windowHeight
     this.windowWidth = wx.getSystemInfoSync().windowWidth
+
+    this.wallUlx = 175;
+    this.wallUly = 160;
+    this.wallDrx = 1315;
+    this.wallDry = 1030;
+
   }
 }

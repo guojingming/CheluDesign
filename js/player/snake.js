@@ -3,27 +3,29 @@ import DataBus from '../databus'
 
 const SNAKE_PIC_WIDTH = 300;
 const SNAKE_PIC_HEIGHT = 300;
-const BODY_RUN_DISTANCE_THRESHOLD = 20;
+const BODY_RUN_DISTANCE_THRESHOLD = 5;
 const BODY_STOP_DISTANCE_THRESHOLD = 20;
 let databus = new DataBus()
 
 export default class Snake extends Sprite {
   constructor(ctx){
-    super('images/face/face2.png', SNAKE_PIC_WIDTH, SNAKE_PIC_HEIGHT)
+    var faceNumber = Math.floor((Math.random() * 100)) % 4 + 1;
+    super('images/face/face' + faceNumber + '.png', SNAKE_PIC_WIDTH, SNAKE_PIC_HEIGHT)
     
-    this.speed = 0.1;
+    this.speed = 0.1; //0.1
     this.directionX = 0.0;
     this.directionY = 0.0;
     this.width = databus.windowWidth / 15;
     this.radius = this.width / 4;
     this.height = this.width;
-    this.locationX = 20 + this.width / 2;
-    this.locationY = 20 + this.height / 2;
+    //this.locationX = databus.wallUlx + 20 + this.width / 2;
+    //this.locationY = databus.wallUly + 20 + this.height / 2;
+    this.locationX = databus.wallUlx;
+    this.locationY = databus.wallUly;
     this.speedUpRate = 0;
     this.bodyNodes = [];
     this.hp = 100;
     this.initBodies(ctx);
-    this.render(ctx);
     this.alive = true;
   }
 
@@ -133,22 +135,33 @@ export default class Snake extends Sprite {
 
 
   render(ctx) {
+
+    this.renderX = databus.windowWidth / 2;
+    this.renderY = databus.windowHeight / 2;
+
     for(var i = 0,len=this.bodyNodes.length; i < len; i++) {
-      this.bodyNodes[i].render(ctx);
+      this.bodyNodes[i].render(ctx, this);
     }
+    // ctx.drawImage(
+    //   this.img,
+    //   this.locationX - this.width / 2,
+    //   this.locationY - this.height / 2,
+    //   this.width,
+    //   this.height,
+    // );
     ctx.drawImage(
       this.img,
-      this.locationX - this.width / 2,
-      this.locationY - this.height / 2,
+      this.renderX - this.width / 2,
+      this.renderY - this.height / 2,
       this.width,
       this.height,
     );
   }
 }
 
-class SnakeBody{
+class SnakeBody extends Sprite{
   constructor(ctx, color, locationX, locationY, speed, directionX, directionY){
-    //super('images/body/b1.png', 50, 50);
+    super('images/body1.png', 49, 49);
     this.width = databus.windowWidth / 20;
     this.height = databus.windowWidth / 20;
     this.radius = this.width / 2;
@@ -164,7 +177,6 @@ class SnakeBody{
     this.directionX = directionX;
     this.directionY = directionY;
     this.speedUpRate = 0;
-    this.render(ctx);
   }
 
   checkCollision(locationX, locationY, radius){
@@ -179,7 +191,7 @@ class SnakeBody{
     this.locationX += this.directionX * this.speed * (0.9 + this.speedUpRate);
     this.locationY += this.directionY * this.speed * (0.9 + this.speedUpRate);
     //console.log("DBX: " + this.directionX + " DBY: " + this.directionY);
-    //console.log("BX: " + this.locationX + " BY: " + this.locationY);
+    console.log("BX: " + this.locationX + " BY: " + this.locationY);
     var distance = Math.sqrt(Math.pow(this.locationX - this.tarLocationX, 2) + Math.pow(this.locationY - this.tarLocationY, 2));
     if(distance <= BODY_STOP_DISTANCE_THRESHOLD){
       return true;
@@ -200,35 +212,35 @@ class SnakeBody{
     } 
   }
 
-  render(ctx){
+  render(ctx, snake){
     //console.log("BX: " + this.locationX + " BY: " + this.locationY);
 
+    // 原版蛇身体是用canvas的画圆函数和渐变色完成的，但是这个真机测试不通过
+    // var grid = ctx.createRadialGradient(this.locationX, this.locationY, 0, this.locationX, this.locationY, this.radius); //渐变填充器
+    // grid.addColorStop(1, 'rgba(255,255,255,1)'); //渐变节点
+    // grid.addColorStop(0, 'rgba('+ this.color +',0.5)'); //渐变节点
+    // ctx.fillStyle = grid; //#00ffff
+    // ctx.beginPath();
+    // ctx.arc(
+    //   this.locationX,
+    //   this.locationY,
+    //   this.radius,
+    //   0,
+    //   Math.PI * 2,
+    //   false
+    // );
+    // ctx.closePath();
+    // ctx.fill();
     
-    var grid = ctx.createRadialGradient(this.locationX, this.locationY, 0, this.locationX, this.locationY, this.radius); //渐变填充器
-    grid.addColorStop(1, 'rgba(255,255,255,1)'); //渐变节点
-    grid.addColorStop(0, 'rgba('+ this.color +',0.5)'); //渐变节点
-    ctx.fillStyle = grid; //#00ffff
-    ctx.beginPath();
-    ctx.arc(
-      this.locationX,
-      this.locationY,
-      this.radius,
-      0,
-      Math.PI * 2,
-      false
-    );
-    ctx.closePath();
-    ctx.fill();
-    
+    this.renderX = snake.renderX - (snake.locationX - this.locationX);
+    this.renderY = snake.renderY - (snake.locationY - this.locationY);
 
-    /**
     ctx.drawImage(
       this.img,
-      this.locationX - this.width / 2,
-      this.locationY - this.height / 2,
+      this.renderX - this.width / 2,
+      this.renderY - this.height / 2,
       this.width,
       this.height,
     );
-     */
   }
 }

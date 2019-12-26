@@ -18,7 +18,7 @@ export default class JoyStickBody extends Sprite {
       this.locationY = JOY_STICK_LOCATIONY;
       this.width = JOY_STICK_WIDTH;
       this.height = JOY_STICK_HEIGHT;
-      this.deltaX = 10;
+      this.deltaX = 0;
       this.deltaY = 0;
       this.started = false;
       this.render(ctx);
