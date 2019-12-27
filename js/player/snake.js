@@ -8,7 +8,7 @@ const BODY_STOP_DISTANCE_THRESHOLD = 20;
 let databus = new DataBus()
 
 export default class Snake extends Sprite {
-  constructor(ctx){
+  constructor(ctx, locationX, locationY){
     var faceNumber = Math.floor((Math.random() * 100)) % 4 + 1;
     super('images/face/face' + faceNumber + '.png', SNAKE_PIC_WIDTH, SNAKE_PIC_HEIGHT)
     
@@ -18,10 +18,10 @@ export default class Snake extends Sprite {
     this.width = databus.windowWidth / 15;
     this.radius = this.width / 4;
     this.height = this.width;
-    //this.locationX = databus.wallUlx + 20 + this.width / 2;
-    //this.locationY = databus.wallUly + 20 + this.height / 2;
-    this.locationX = databus.wallUlx;
-    this.locationY = databus.wallUly;
+    this.locationX = locationX + this.width / 2;
+    this.locationY = locationY + this.height / 2;
+    //this.locationX = databus.wallUlx;
+    //this.locationY = databus.wallUly;
     this.speedUpRate = 0;
     this.bodyNodes = [];
     this.hp = 100;

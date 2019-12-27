@@ -26,10 +26,10 @@ export default class DataBus {
     this.windowHeight = wx.getSystemInfoSync().windowHeight
     this.windowWidth = wx.getSystemInfoSync().windowWidth
 
-    this.wallUlx = 175;
-    this.wallUly = 160;
-    this.wallDrx = 1315;
-    this.wallDry = 1030;
+    this.wallUlx = 130;
+    this.wallUly = 120;
+    this.wallDrx = 870;
+    this.wallDry = 680;
 
   }
 }

@@ -20,7 +20,7 @@ export default class AppleFactory{
         var apple = new Apple(locationX, locationY);
         this.apples.push(apple);
         this.appleCount = this.apples.length;
-        apple.render(ctx);
+        //apple.render(ctx);
     }
 
     removeApple(i){
@@ -43,9 +43,9 @@ export default class AppleFactory{
         }
     }
 
-    render(ctx){
+    render(ctx, snake){
         for(var i = 0;i<this.apples.length;++i){
-            this.apples[i].render(ctx);
+          this.apples[i].render(ctx, snake);
         }
     }
 }
@@ -61,11 +61,16 @@ class Apple extends Sprite {
         this.locationY = locationY;
     }
 
-    render(ctx) {
+    render(ctx, snake) {
+
+        this.renderX = snake.renderX - (snake.locationX - this.locationX);
+        this.renderY = snake.renderY - (snake.locationY - this.locationY);
         ctx.drawImage(
             this.img,
-            this.locationX - this.width / 2,
-            this.locationY - this.height / 2,
+            //this.locationX - this.width / 2,
+            //this.locationY - this.height / 2,
+            this.renderX - this.width / 2,
+            this.renderY - this.height / 2,
             this.width,
             this.height,
         );

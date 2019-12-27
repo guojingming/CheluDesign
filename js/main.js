@@ -28,7 +28,10 @@ export default class Main {
     canvas.removeEventListener('touchstart', this.restartTouchEventHandler)
 
     this.bg       = new BackGround(ctx)
-    this.snake   = new Snake(ctx)
+    this.snake   = new Snake(databus.wallUlx + 20, databus.wallUly + 20)
+    this.enemySnake = new Snake(ctx, databus.wallUlx + 20, databus.wallDry - 20);
+
+
     this.wall = new Wall(ctx)
     this.appleFactory = new AppleFactory()
     this.gameinfo = new GameInfo()
@@ -58,7 +61,7 @@ export default class Main {
 
     this.bg.render(ctx, this.snake)
     this.wall.render(ctx, this.snake)
-    this.appleFactory.render(ctx)
+    this.appleFactory.render(ctx, this.snake)
     this.snake.render(ctx)
     this.joystickbase.render(ctx)
     this.joystickbody.render(ctx)
@@ -88,8 +91,8 @@ export default class Main {
   }
 
   checkover(){
-    //this.wall.checkCollision(this.snake);
-    //this.snake.checkAlive();
+    this.wall.checkCollision(this.snake);
+    this.snake.checkAlive();
     if(!this.snake.alive){
       this.over = true;
     }
