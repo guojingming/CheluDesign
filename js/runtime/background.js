@@ -7,9 +7,9 @@ const screenHeight = window.innerHeight
 // const BG_WIDTH     = 1920
 // const BG_HEIGHT    = 1620
 
-const BG_IMG_SRC   = 'images/bg2_s.png'
-const BG_WIDTH     = 1000
-const BG_HEIGHT    = 800
+const BG_IMG_SRC   = 'images/bg2.png'
+const BG_WIDTH     = 1920
+const BG_HEIGHT    = 1620
 
 /**
  * 游戏背景类
@@ -20,7 +20,7 @@ export default class BackGround extends Sprite {
     super(BG_IMG_SRC, BG_WIDTH, BG_HEIGHT)
 
 
-    //this.render(ctx)
+    //this.render(ctx, snake)
   }
 
   update() {
@@ -36,7 +36,7 @@ export default class BackGround extends Sprite {
   render(ctx, snake) {
     this.renderX = snake.locationX - screenWidth / 2;
     this.renderY = snake.locationY - screenHeight / 2;
-
+    //console.log("RX: " + this.renderX + " RY: " + this.renderY);
     ctx.drawImage(
       this.img,
       this.renderX,

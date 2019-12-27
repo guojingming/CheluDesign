@@ -40,7 +40,7 @@ export default class JoyStickBody extends Sprite {
         e.preventDefault()
         let x = e.touches[0].clientX;
         let y = e.touches[0].clientY;
-        if(x >= (JOY_STICK_LOCATIONX + this.width / 2) - 50 && x <= (JOY_STICK_LOCATIONX + this.width / 2) + 50 && y >= (JOY_STICK_LOCATIONY + this.height / 2) - 50 && y <= (JOY_STICK_LOCATIONY + this.height / 2) + 50){
+        if(x >= (JOY_STICK_LOCATIONX + this.width / 2) - 100 && x <= (JOY_STICK_LOCATIONX + this.width / 2) + 100 && y >= (JOY_STICK_LOCATIONY + this.height / 2) - 100 && y <= (JOY_STICK_LOCATIONY + this.height / 2) + 100){
           this.started = true
           let deltaX = x - (JOY_STICK_LOCATIONX + this.width / 2);
           let deltaY = y - (JOY_STICK_LOCATIONY + this.height / 2);

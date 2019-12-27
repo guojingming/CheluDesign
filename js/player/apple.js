@@ -5,8 +5,8 @@ let databus = new DataBus()
 
 const APPLE_PIC_WIDTH = 117;
 const APPLE_PIC_HEIGHT = 126;
-const APPLE_MAX_COUNT = 15;
-const APPLE_MIN_COUNT = 5;
+const APPLE_MAX_COUNT = 20;
+const APPLE_MIN_COUNT = 10;
 
 const APPLE_WIDTH = databus.windowWidth / 24;
 
@@ -33,10 +33,10 @@ export default class AppleFactory{
             return;
         }
         for(var i = this.appleCount;i<APPLE_MAX_COUNT;++i){
-            var lxLimit = wall.ulx + APPLE_WIDTH;
-            var rxLimit = wall.drx - APPLE_WIDTH;
-            var uyLimit = wall.uly + APPLE_WIDTH;
-            var dyLimit = wall.dry - APPLE_WIDTH;
+            var lxLimit = wall.ulx + 2 * APPLE_WIDTH;
+            var rxLimit = wall.drx - 2 * APPLE_WIDTH;
+            var uyLimit = wall.uly + 2 * APPLE_WIDTH;
+            var dyLimit = wall.dry - 2 * APPLE_WIDTH;
             var randomX = lxLimit + Math.random() * (rxLimit - lxLimit);
             var randomY = uyLimit + Math.random() * (dyLimit - uyLimit);
             this.createApple(ctx, randomX, randomY);

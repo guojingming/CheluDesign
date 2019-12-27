@@ -16,7 +16,7 @@ export default class GameInfo {
     )
   }
 
-  renderGameOver(ctx, score) {
+  renderGameOver(ctx, score, win) {
     ctx.drawImage(
         atlas, 
         0, 0, 119, 108, 
@@ -28,12 +28,20 @@ export default class GameInfo {
 
     ctx.fillStyle = "#ffffff"
     ctx.font    = "20px Arial"
-
-    ctx.fillText(
-      '游戏结束',
-      screenWidth / 2 - 40,
-      screenHeight / 2 - 100
-    )
+    if(win){
+      ctx.fillText(
+        '你赢了！真厉害！',
+        screenWidth / 2 - 70,
+        screenHeight / 2 - 100
+      )
+    }else{
+      ctx.fillText(
+        '你输了！太菜了！',
+        screenWidth / 2 - 70,
+        screenHeight / 2 - 100
+      )
+    }
+    
 
     ctx.fillText(
       '得分: ' + score,

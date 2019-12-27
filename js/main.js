@@ -24,12 +24,12 @@ export default class Main {
 
   restart() {
     databus.reset()
+    
 
-    canvas.removeEventListener('touchstart', this.restartTouchEventHandler)
-
-    this.bg       = new BackGround(ctx)
-    this.snake   = new Snake(databus.wallUlx + 20, databus.wallUly + 20)
-    this.enemySnake = new Snake(ctx, databus.wallUlx + 20, databus.wallDry - 20);
+    this.bg = new BackGround(ctx)
+    
+    this.snake = new Snake(ctx, databus.wallUlx + 80, databus.wallUly + 80, true);
+    this.enemySnake = new Snake(ctx, databus.wallDrx - 80, databus.wallDry - 80, false);
 
 
     this.wall = new Wall(ctx)
@@ -63,20 +63,30 @@ export default class Main {
     this.wall.render(ctx, this.snake)
     this.appleFactory.render(ctx, this.snake)
     this.snake.render(ctx)
+    this.enemySnake.render(ctx, this.snake);
     this.joystickbase.render(ctx)
     this.joystickbody.render(ctx)
   }
 
   // 游戏逻辑更新主函数
   update() {
-    //this.bg.update()
     this.snake.updateDirection(this.joystickbody.deltaX, this.joystickbody.deltaY);
     this.snake.updateLocation();
+
+    this.enemySnake.snakeAI(this.snake, this.wall, this.appleFactory);
+    this.enemySnake.updateLocation();
 
     for(var i = 0;i < this.appleFactory.appleCount;++i){
       if(this.snake.checkCollision(this.appleFactory.apples[i].locationX, this.appleFactory.apples[i].locationY, this.appleFactory.apples[i].radius)){
         databus.score++;
         this.snake.grow(ctx);
+        this.appleFactory.removeApple(i);
+      }
+    }
+
+    for(var i = 0;i < this.appleFactory.appleCount;++i){
+      if(this.enemySnake.checkCollision(this.appleFactory.apples[i].locationX, this.appleFactory.apples[i].locationY, this.appleFactory.apples[i].radius)){
+        this.enemySnake.grow(ctx);
         this.appleFactory.removeApple(i);
       }
     }
@@ -92,10 +102,33 @@ export default class Main {
 
   checkover(){
     this.wall.checkCollision(this.snake);
+    this.wall.checkCollision(this.enemySnake);
+    if(this.snake.checkCollisionBody(this.enemySnake)){
+      this.enemySnake.hp = 0;
+    }
+
+    if(this.enemySnake.checkCollisionBody(this.snake)){
+      this.snake.hp = 0;
+    }
+
+    if(this.snake.bodyNodes.length - this.enemySnake.bodyNodes.length >= 20){
+      this.enemySnake.hp = 0;
+    }
+    if(this.enemySnake.bodyNodes.length - this.snake.bodyNodes.length >= 20){
+      this.snake.hp = 0;
+    }
+
+    this.enemySnake.checkAlive();
     this.snake.checkAlive();
+    if(!this.enemySnake.alive){
+      this.over = true;
+      this.snake.win = true;
+    }
     if(!this.snake.alive){
       this.over = true;
+      this.snake.win = false;
     }
+
   }
 
   // 实现游戏帧循环
@@ -111,7 +144,7 @@ export default class Main {
             canvas
           )
           if(this.over == true){
-            this.gameinfo.renderGameOver(ctx, databus.score)
+            this.gameinfo.renderGameOver(ctx, databus.score, this.snake.win)
             canvas.addEventListener('touchstart',((e) => {
               e.preventDefault()
               let x = e.touches[0].clientX
