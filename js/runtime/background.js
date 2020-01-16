@@ -7,7 +7,7 @@ const screenHeight = window.innerHeight
 // const BG_WIDTH     = 1920
 // const BG_HEIGHT    = 1620
 
-const BG_IMG_SRC   = 'images/bg2.png'
+const BG_IMG_SRC   = 'images/bg2.jpg'
 const BG_WIDTH     = 1920
 const BG_HEIGHT    = 1620
 
